@@ -209,9 +209,146 @@ function renderGraph(X, Y){
                     .attr("y", d=>yScale(d[chosenYAxis])+radius*0.35);
                     
             }
+            // Step 5:- changes classes to change bold text
+            var xOptions = ["poverty", "age", "income"];
+            var yOptions = ["healthcare", "smokes", "obesity"];
+            var xData = new Array(3).fill(0);
+            var yData = new Array(3).fill(0);
+            xData[xOptions.indexOf(chosenXAxis)]=1;
+            yData[yOptions.indexOf(chosenYAxis)]=1;
+
+            xLabelGroup.selectAll("text")
+            .data(xData)
+            .classed("active", d=>d==1?true:false)
+            .classed("inactive", d=>d==0?true:false)
+
+            yLabelGroup.selectAll("text")
+            .data(yData)
+            .classed("active", d=>d==1?true:false)
+            .classed("inactive", d=>d==0?true:false)
+
+            //Update card
+            //console.log(`${chosenXAxis}_${chosenYAxis}`);
+            d3.selectAll(".card").classed("card-active", false);
+            d3.select(`#${chosenXAxis}_${chosenYAxis}`).classed("card-active", true);
+            //Return
+            return [gGroup, circlesGroup, textGroup, xLabelGroup, yLabelGroup, xAxis, yAxis, xScale, yScale];
+            
+        }
+
+        //Step1:- Decide SVG and Group Frames
+        //This will be changed to window dependent later
+        var svgWidth = window.innerWidth-100>1000?1000:window.innerWidth-100;
+        var svgHeight = window.innerHeight-50>700?700:window.innerHeight-50;
+        var radius = (18*svgWidth-100)/1000;
+        var labelGap = d3.mean([svgWidth, svgHeight])*2/100;
+    
+        //console.log(svgWidth, svgHeight);
+        
+        var margin = {
+        top: labelGap,
+        right: labelGap,
+        bottom: 8*labelGap,
+        left: 8*labelGap
+        };
+
+        var width = svgWidth - margin.left - margin.right;
+        var height = svgHeight - margin.top - margin.bottom;
+
+        var svgArea = d3.select("#scatter>svg");
+
+        // If there is already an svg container on the page, remove it
+        if (!svgArea.empty()) {
+            svgArea.remove();
+        }
+
+        //Step2:- Append the SVG and chartGroup to the html
+        var svg = d3.select("#scatter").append("svg")
+        .attr("height", svgHeight)
+        .attr("width", svgWidth);
+
+        var chartGroup =  svg.append("g")
+                            .attr("transform", `translate(${margin.left}, ${margin.top})`)
+
+        //By default, show poverty Vs obesity
+        var chosenXAxis, chosenYAxis;
+        chosenXAxis = (X==null) ? "poverty": X; 
+        chosenYAxis = (Y==null) ? "obesity": Y;
+        
+        //Step5:- Explore CSV
+        d3.csv('assets/data/data.csv').then(function(data, err){
+            //Throw err if exists
+            if (err) throw err;
+
+            //console.log(data);
+            //abbr, poverty, age, income, obesity, smokes, healthcare are the attributes to be considered
+            //data is in the form of array of objects
+
+            //Step a:- //Convert the below attributes to numeric
+            // age, poverty, income, obesity, smokes, healthcare
+            data.forEach(entry => {
+                entry.age = +entry.age;
+                entry.poverty = +entry.poverty;
+                entry.income = +entry.income;
+                entry.obesity = +entry.obesity;
+                entry.smokes = +entry.smokes;
+                entry.healthcare = +entry.healthcare;
+            });
+            //Testing scale:- console.log(scale(data, "age", false)(data[0]["age"]));
+
+            var gGroup, circlesGroup, textGroup, xLabelGroup, yLabelGroup, xAxis, yAxis, xScale, yScale;
+            [gGroup, circlesGroup, textGroup, xLabelGroup, yLabelGroup, xAxis, yAxis, xScale, yScale] = updateChart(data, chosenXAxis, chosenYAxis);
+
+            //Event Listeners on xLabelGroup, yLabelGroup
+            xLabelGroup.selectAll("text").on("click", function(){
+                var value = d3.select(this).attr("value");
+                if (value!=chosenXAxis){
+                    chosenXAxis = value;
+                    [gGroup, circlesGroup, textGroup, xLabelGroup, yLabelGroup, xAxis, yAxis, xScale, yScale] = modifyChart(data, gGroup, circlesGroup, textGroup, xLabelGroup, yLabelGroup, xAxis, yAxis, xScale, yScale, chosenXAxis, chosenYAxis, axis="x");
+                }
+            })
+            yLabelGroup.selectAll("text").on("click", function(){
+                var value = d3.select(this).attr("value");
+                if (value!=chosenYAxis){
+                    chosenYAxis = value;
+                    [gGroup, circlesGroup, textGroup, xLabelGroup, yLabelGroup, xAxis, yAxis, xScale, yScale] = modifyChart(data, gGroup, circlesGroup, textGroup, xLabelGroup, yLabelGroup, xAxis, yAxis, xScale, yScale, chosenXAxis, chosenYAxis, axis="y");
+                }
+            })
+            
+        }).catch(function(error){
+            console.warn(error);
+        })
+
+        timeout = false;
+
+
+    }
+
+    
+}
+renderGraph(null, null);
+
+d3.select(window).on("resize", ()=>{
+    start = new Date(); 
+    if (timeout===false){
+        timeout=true;
+        //To retain already selected options during window resize
+        var selected = []
+        d3.selectAll(".active").each(function(){
+            selected.push(d3.select(this).attr("value"));
+        })  
+        
+        setTimeout(renderGraph,delta, ...selected);
+
+    }
+    
+
+});
+
+
             
             
-            
+
         
                 
                 
