@@ -155,7 +155,24 @@ function renderGraph(X, Y){
             return [gGroup, circlesGroup, textGroup, xLabelGroup, yLabelGroup, xAxis, yAxis, xScale, yScale];
         }
     
+        function modifyChart(data, gGroup, circlesGroup, textGroup, xLabelGroup, yLabelGroup, xAxis, yAxis, xScale, yScale, chosenXAxis, chosenYAxis, axis){
+            
+            if(axis=="x"){
+                //Step 1:- Create scales
+                var xScale = scale(data, chosenXAxis, false);
+                //Step 2:- Axis Transition
+                // updates x axis with transition
+                //Change the format of ticks if screen width is less that 530 and value is "income" to avoid crowding
+                if((chosenXAxis == 'income') && (svgWidth<530)){
+                    var bottomAxis = d3.axisBottom(xScale).tickFormat(d3.format(".2s"));;         
+                }else{
+                    var bottomAxis = d3.axisBottom(xScale);
+                }
                 
+                xAxis.transition()
+                    .duration(1000)
+                    .call(bottomAxis);
+        
                 
                 
                 
