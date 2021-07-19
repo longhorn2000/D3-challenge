@@ -144,6 +144,17 @@ function renderGraph(X, Y){
                 .classed("active", chosenYAxis=="obesity"?true:false)
                 .classed("inactive", chosenYAxis!="obesity"?true:false)
                 .text("Obese (%)");
+
+            // Step 6:- Create ToolTip
+            gGroup = renderTooltip(gGroup, chosenXAxis, chosenYAxis);
+
+            //Update card
+            //console.log(`${chosenXAxis}_${chosenYAxis}`);
+            d3.selectAll(".card").classed("card-active", false);
+            d3.select(`#${chosenXAxis}_${chosenYAxis}`).classed("card-active", true);
+            return [gGroup, circlesGroup, textGroup, xLabelGroup, yLabelGroup, xAxis, yAxis, xScale, yScale];
+        }
+    
                 
                 
                 
