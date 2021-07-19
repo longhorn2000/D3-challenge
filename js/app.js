@@ -69,5 +69,28 @@ function renderGraph(X, Y){
             var yAxis = chartGroup.append("g")
                                 .call(leftAxis);
 
-                                
+            // Step 4:- Render circles
+            var gGroup = chartGroup.selectAll("circle")
+                                        .data(data)
+                                        .enter()
+                                        .append("g")
+                                        .attr("class", "circ");
+            
+            var circlesGroup = gGroup.append("circle")
+                .attr("cx", d=>xScale(d[chosenXAxis]))
+                .attr("cy", d=>yScale(d[chosenYAxis]))
+                .attr("r", radius)
+                .attr("fill", "red")
+                .attr("opacity", ".5");
+                                        
+            var textGroup = gGroup.append("text")
+                .attr("x", d=>xScale(d[chosenXAxis]))
+                .attr("y", d=>yScale(d[chosenYAxis])+radius*0.35)
+                .attr("class", "aText")
+                .attr("fill", "white")
+                .text(d=>d["abbr"]);  
+                
+                
+
+
 
