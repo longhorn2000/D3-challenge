@@ -172,6 +172,46 @@ function renderGraph(X, Y){
                 xAxis.transition()
                     .duration(1000)
                     .call(bottomAxis);
+
+                //Step 3:- Transition circles
+                circlesGroup.transition()
+                    .duration(1000)
+                    .attr("cx", d => xScale(d[chosenXAxis]));
+                //Step 4:- Update tooltip
+                gGroup = renderTooltip(gGroup, chosenXAxis, chosenYAxis);
+
+                //Step5:- Transition Texts
+                textGroup.transition()
+                    .duration(1000)
+                    .attr("x", d=>xScale(d[chosenXAxis]));
+                    
+
+
+            }else{
+                //Step 1:- Create scales
+                var yScale = scale(data, chosenYAxis, true);
+                //Step 2:- Axis Transition
+                // updates x axis with transition
+                var leftAxis = d3.axisLeft(yScale);
+                yAxis.transition()
+                    .duration(1000)
+                    .call(leftAxis);
+                //Step 3:- Transition circles
+                circlesGroup.transition()
+                    .duration(1000)
+                    .attr("cy", d => yScale(d[chosenYAxis]));
+                //Step 4:- Update tooltip
+                gGroup = renderTooltip(gGroup, chosenXAxis, chosenYAxis);
+
+                //Step5:- Transition Texts
+                textGroup.transition()
+                    .duration(1000)
+                    .attr("y", d=>yScale(d[chosenYAxis])+radius*0.35);
+                    
+            }
+            
+            
+            
         
                 
                 
