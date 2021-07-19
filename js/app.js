@@ -89,6 +89,63 @@ function renderGraph(X, Y){
                 .attr("class", "aText")
                 .attr("fill", "white")
                 .text(d=>d["abbr"]);  
+
+            // Step 5:- Create axes labels
+            // // Step 5. 1 Axes label group for x & y axis
+            var xLabelGroup = chartGroup.append("g").attr("transform", `translate(${width/2}, ${height})`);
+            var yLabelGroup = chartGroup.append("g")
+                                        .attr("transform", "rotate(-90)");
+                                        
+            // // Step 5. 2 Render axes labels
+            var povertyLabel = xLabelGroup.append("text")
+                                        .attr("x", 0)
+                                        .attr("y", 3.5*labelGap)
+                                        .attr("value", "poverty")
+                                        .classed("active", chosenXAxis=="poverty"?true:false)
+                                        .classed("inactive", chosenXAxis!="poverty"?true:false)
+                                        .text("In poverty (%)");
+
+            var ageLabel = xLabelGroup.append("text")
+                .attr("x", 0)
+                .attr("y", 5*labelGap)
+                .attr("value", "age")
+                .classed("active", chosenXAxis=="age"?true:false)
+                .classed("inactive", chosenXAxis!="age"?true:false)
+                .text("Age (Median)");
+
+            var incomeLabel = xLabelGroup.append("text")
+                .attr("x", 0)
+                .attr("y", 6.5*labelGap)
+                .attr("value", "income")
+                .classed("active", chosenXAxis=="income"?true:false)
+                .classed("inactive", chosenXAxis!="income"?true:false)
+                .text("Household Income (Median)");
+
+            var healthcareLabel = yLabelGroup.append("text")
+                .attr("x", 0 - (height / 2))
+                .attr("y", -3*labelGap)
+                .attr("value", "healthcare")
+                .classed("active", chosenYAxis=="healthcare"?true:false)
+                .classed("inactive", chosenYAxis!="healthcare"?true:false)
+                .text("Lacks Healthcare (%)");
+            
+            var smokesLabel = yLabelGroup.append("text")
+                .attr("x", 0 - (height / 2))
+                .attr("y", -4.5*labelGap)
+                .attr("value", "smokes")
+                .classed("active", chosenYAxis=="smokes"?true:false)
+                .classed("inactive", chosenYAxis!="smokes"?true:false)
+                .text("Smokes (%)");
+
+            var obesityLabel = yLabelGroup.append("text")
+                .attr("x", 0 - (height / 2))
+                .attr("y", -6*labelGap)
+                .attr("value", "obesity")
+                .classed("active", chosenYAxis=="obesity"?true:false)
+                .classed("inactive", chosenYAxis!="obesity"?true:false)
+                .text("Obese (%)");
+                
+                
                 
                 
 
