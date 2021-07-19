@@ -58,3 +58,16 @@ function renderGraph(X, Y){
             }
             var leftAxis = d3.axisLeft(yScale);
 
+            //Step 3:- Render axes 
+            var xAxis = chartGroup.append("g")
+                                    .attr("transform", `translate(0, ${height})`)
+                                    .attr("font-size", labelGap)
+                                    .call(bottomAxis);
+                                    
+
+
+            var yAxis = chartGroup.append("g")
+                                .call(leftAxis);
+
+                                
+
