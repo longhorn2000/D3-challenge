@@ -41,4 +41,20 @@ function renderGraph(X, Y){
             })
             return gGroup;
         }
-        
+
+        function updateChart(data, chosenXAxis, chosenYAxis){
+            //Step 1:- Create scales
+            var xScale = scale(data, chosenXAxis, false);
+            var yScale = scale(data, chosenYAxis, true);
+
+            //Step 2:- Create left and bottom axes
+            var bottomAxis = d3.axisBottom(xScale);
+            // updates x axis with transition
+            //Change the format of ticks if screen width is less that 530 and value is "income" to avoid crowding
+            if((chosenXAxis == 'income') && (svgWidth<530)){
+                var bottomAxis = d3.axisBottom(xScale).tickFormat(d3.format(".2s"));;         
+            }else{
+                var bottomAxis = d3.axisBottom(xScale);
+            }
+            var leftAxis = d3.axisLeft(yScale);
+
